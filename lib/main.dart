@@ -1,111 +1,251 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      MaterialApp(
+        home: CardGridScreen(),
+      ),
+    );
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class EmptyCard extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const EmptyCard({
+    Key key,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return Container(
+      width: width,
+      height: height,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4.0,
+            offset: const Offset(0.0, 4.0),
+          ),
+        ],
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class CardGridScreen extends StatefulWidget {
+  CardGridScreen({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CardGridScreenState createState() => _CardGridScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CardGridScreenState extends State<CardGridScreen> {
+  @override
+  Widget build(BuildContext context) {
+    var columnCount = 3;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+    return AutoRefresh(
+      duration: const Duration(seconds: 10),
+      child: Scaffold(
+        drawer: DrawerWidget(),
+        appBar: AppBar(
+          title: Text("Mor Portal"),
+        ),
+        body: SafeArea(
+          child: AnimationLimiter(
+            child: GridView.count(
+              childAspectRatio: 1.0,
+              padding: const EdgeInsets.all(8.0),
+              crossAxisCount: columnCount,
+              children: List.generate(
+                30,
+                (int index) {
+                  return AnimationConfiguration.staggeredGrid(
+                    columnCount: columnCount,
+                    position: index,
+                    duration: const Duration(milliseconds: 375),
+                    child: const ScaleAnimation(
+                      scale: 0.5,
+                      child: FadeInAnimation(
+                        child: EmptyCard(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AutoRefresh extends StatefulWidget {
+  final Duration duration;
+  final Widget child;
+
+  AutoRefresh({
+    Key key,
+    @required this.duration,
+    @required this.child,
+  })  : assert(duration != null),
+        super(key: key);
+
+  @override
+  _AutoRefreshState createState() => _AutoRefreshState();
+}
+
+class _AutoRefreshState extends State<AutoRefresh> {
+  int keyValue;
+  ValueKey key;
+
+  Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    keyValue = 0;
+    key = ValueKey(keyValue);
+
+    _recursiveBuild();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return Container(
+      key: key,
+      child: widget.child,
+    );
+  }
+
+  void _recursiveBuild() {
+    _timer = Timer(
+      widget.duration,
+      () {
+        setState(() {
+          keyValue = keyValue + 1;
+          key = ValueKey(keyValue);
+          _recursiveBuild();
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+}
+
+class DrawerWidget extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Drawer(
+      //profile, duty poiuts, driver, profile, officer name ontop of drawer
+      child: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          drawerHeader(),
+          ExpansionTile(
+            backgroundColor: Colors.blue[50],
+            initiallyExpanded: true,
+            title: Text("Overview"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Police Station of your juristiction : Xyz "),
+                subtitle: Text(
+                    "the accuracy of your jurisdiction is based on your mobile gps location and "),
+              ),
+              ListTile(
+                title: Text("TI name: Abcd"),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text("Ph No: 8000399923"),
+              ),
+            ],
+          ),
+          ExpansionTile(
+            title: Text("Your Complaints/Reports"),
+            children: <Widget>[
+              ListTile(
+                title: Text("View All"),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text("Modify/Delete"),
+                onTap: () {},
+              ),
+            ],
+          ),
+          ExpansionTile(
+            title: Text("Complaint against Police"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Categories"),
+                onTap: () {},
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: "Enter Complain",
+                ),
+              ),
+            ],
+          ),
+          ExpansionTile(
+            title: Text("Report Incident"),
+            children: <Widget>[
+              ListTile(
+                title: Text("..."),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text("----"),
+                onTap: () {},
+              ),
+            ],
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+    );
+  }
+
+  Widget drawerHeader() {
+    return DrawerHeader(
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(5.0),
+            child: Text(
+              'Welcome to Mor Portal',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+          ),
+          CircleAvatar(
+            backgroundImage: AssetImage("assets/cg_police_logo.png"),
+            minRadius: 20.0,
+            maxRadius: 50.0,
+          ),
+          // Image(
+          //   height: 100.0,
+          //   width: 100.0,
+          //   fit: BoxFit.fitWidth,
+          //   image: AssetImage(
+          //     'assets/profile_image.jpeg',
+          //   ),
+          // ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
