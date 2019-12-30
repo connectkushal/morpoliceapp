@@ -9,26 +9,33 @@ class DrawerWidget extends StatelessWidget {
         children: <Widget>[
           drawerHeader(),
           ExpansionTile(
-            backgroundColor: Colors.blue[50],
-            initiallyExpanded: true,
-            title: Text("Overview"),
+            //initiallyExpanded: true,
+
+            title: Text("Your Profile"),
+            backgroundColor: Colors.blueGrey[50],
             children: <Widget>[
-              ListTile(
-                title: Text("Police Station of your juristiction : Xyz "),
-                subtitle: Text(
-                    "the accuracy of your jurisdiction is based on your mobile gps location and "),
+              Container(
+                padding: EdgeInsets.only(left: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text("Name: Xyz Abc"),
+                    Text("Gender: Male"),
+                    Text("Address: asdf asdf asdf"),
+                    Text("Ph No: 8000399923"),
+                    Text("_______________________")
+                  ],
+                ),
               ),
               ListTile(
-                title: Text("TI name: Abcd"),
                 onTap: () {},
-              ),
-              ListTile(
-                title: Text("Ph No: 8000399923"),
+                leading: Icon(Icons.edit),
+                title: Text("Edit Profile"),
               ),
             ],
           ),
           ExpansionTile(
-            title: Text("Your Complaints/Reports"),
+            title: Text("About CG Police"),
             children: <Widget>[
               ListTile(
                 title: Text("View All"),
@@ -41,7 +48,7 @@ class DrawerWidget extends StatelessWidget {
             ],
           ),
           ExpansionTile(
-            title: Text("Complaint against Police"),
+            title: Text("FAQs"),
             children: <Widget>[
               ListTile(
                 title: Text("Categories"),
@@ -55,7 +62,7 @@ class DrawerWidget extends StatelessWidget {
             ],
           ),
           ExpansionTile(
-            title: Text("Report Incident"),
+            title: Text("Feedback"),
             children: <Widget>[
               ListTile(
                 title: Text("..."),
@@ -74,16 +81,27 @@ class DrawerWidget extends StatelessWidget {
 
   Widget drawerHeader() {
     return Container(
-      color: Colors.brown[100],
+      decoration: BoxDecoration(
+        //borderRadius: BorderRadius.circular(100),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.blue[100],
+          ],
+        ),
+      ),
+      //
+      //color: Colors.blue[100],
       padding: EdgeInsets.all(1.0),
       height: 150.0,
-
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 5.0, left: 5.0),
+            padding: EdgeInsets.only(left: 10.0),
             height: 125.0,
             child: Image.asset("assets/images/cg_police_logo.png"),
           ),
