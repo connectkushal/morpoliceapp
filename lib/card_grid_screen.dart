@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:portal_demo/widgets/animated_card.dart';
+import 'app_localization.dart';
 import 'widgets/drawer_widget.dart';
 
 class CardGridScreen extends StatefulWidget {
@@ -18,8 +19,10 @@ class _CardGridScreenState extends State<CardGridScreen> {
 
     return Scaffold(
       drawer: DrawerWidget(),
+      //endDrawer: DrawerWidget(),
       appBar: AppBar(
-        title: Text("Mor Police"),
+        //leading: Icon(Icons.filter_b_and_w),
+        title: Text(AppLocalizations.of(context).translate('appBarTitle')),
       ),
       bottomNavigationBar: bottomBar2(),
       body: SafeArea(

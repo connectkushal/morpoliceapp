@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_localization.dart';
+
 class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
@@ -7,7 +9,7 @@ class DrawerWidget extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          drawerHeader(),
+          drawerHeader(context),
           ExpansionTile(
             //initiallyExpanded: true,
 
@@ -19,7 +21,10 @@ class DrawerWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Text("Name: Xyz Abc"),
+                    Text(
+                      "Name: Xyz Abc",
+                      //style: TextStyle(fontFamily: "Ganga-Regular"),// हिंदी फॉन्ट
+                    ),
                     Text("Gender: Male"),
                     Text("Address: asdf asdf asdf"),
                     Text("Ph No: 8000399923"),
@@ -79,7 +84,7 @@ class DrawerWidget extends StatelessWidget {
     );
   }
 
-  Widget drawerHeader() {
+  Widget drawerHeader(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         //borderRadius: BorderRadius.circular(100),
@@ -107,7 +112,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           Flexible(
             child: Text(
-              'Welcome to Mor Police',
+              AppLocalizations.of(context).translate('title'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
