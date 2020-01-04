@@ -1,44 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'app_localization.dart';
 import 'card_grid_screen.dart';
+import 'widgets/asyncinitwrapper.dart';
+import 'example_app.dart';
+//import 'select_language_screen.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+  //runApp(ExampleApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: Locale('en'),
-      // List all of the app's supported locales here
-      supportedLocales: [
-        Locale('en'),
-        Locale('hi'),
-      ],
-      // These delegates make sure that the localization data for the proper language is loaded
-      localizationsDelegates: [
-        // THIS CLASS WILL BE ADDED LATER
-        // A class which loads the translations from JSON files
-        AppLocalizations.delegate,
-        // Built-in localization of basic text for Material widgets
-        GlobalMaterialLocalizations.delegate,
-        // Built-in localization for text direction LTR/RTL
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      // Returns a locale which will be used by the app
-      // localeResolutionCallback: (locale, supportedLocales) {
-      //   // Check if the current device locale is supported
-      //   for (var supportedLocale in supportedLocales) {
-      //     if (supportedLocale.languageCode == locale.languageCode &&
-      //         supportedLocale.countryCode == locale.countryCode) {
-      //       return supportedLocale;
-      //     }
-      //   }
-      //   // If the locale of the device is not supported, use the first one
-      //   // from the list (English, in this case).
-      //   return supportedLocales.elementAt(1);
-      // },
-      home: CardGridScreen(),
+    return AsyncInitWrapper(
+      onInit: () async {
+        await Future.delayed(Duration(seconds: 5));
+      },
+      builder: (context, snapshot) {
+        switch (snapshot.data) {
+          case (StartupState.Busy):
+            //Loading Scaffold, eg spalsh screen
+            return CircularProgressIndicator();
+
+          case (StartupState.Error):
+            //Error scaffold screen
+            return Scaffold();
+
+          case (StartupState.Success):
+            //On finished loading scaffold
+            return MaterialApp(
+              locale: Locale('hi'),
+              supportedLocales: [
+                Locale('hi'),
+                Locale('en'),
+              ],
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              home: CardGridScreen(),
+              //home: SelectLanguageScreen(),
+            );
+
+          default:
+            return Container();
+        }
+      },
     );
   }
 }
