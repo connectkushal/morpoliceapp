@@ -10,6 +10,8 @@ class AnimatedCard extends StatefulWidget {
   final Color iconColor;
   final double width;
   final double height;
+  final Color backgroundColor;
+  final Color textColor;
 
   const AnimatedCard({
     Key key,
@@ -21,6 +23,8 @@ class AnimatedCard extends StatefulWidget {
     this.width,
     this.height,
     this.iconColor,
+    this.backgroundColor = Colors.white,
+    this.textColor = Colors.black,
   })  : assert(columnCount != null),
         assert(title != null),
         assert(position != null),
@@ -45,10 +49,11 @@ class _AnimatedCardState extends State<AnimatedCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Icon(widget.icon, size: 100.0, color: widget.iconColor),
-                  Text(widget.title, style: TextStyle(fontSize: 18)),
+                  Text(widget.title,
+                      style: TextStyle(fontSize: 18, color: widget.textColor)),
                 ],
               ),
-              color: Colors.white,
+              color: widget.backgroundColor,
               onPressed: widget.onPressed,
             ),
             width: widget.width,

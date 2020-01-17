@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:portal_demo/widgets/animated_card.dart';
+import 'widgets/animated_card.dart';
 import 'app_localization.dart';
 import 'widgets/drawer_widget.dart';
 
@@ -16,74 +16,105 @@ class _CardGridScreenState extends State<CardGridScreen> {
   @override
   Widget build(BuildContext context) {
     var columnCount = 2;
-
     return Scaffold(
       drawer: DrawerWidget(),
       //endDrawer: DrawerWidget(),
       appBar: AppBar(
+        backgroundColor: Colors.indigo[900],
         //leading: Icon(Icons.filter_b_and_w),
-        title: Text(AppLocalizations.of(context).translate('appBarTitle')),
+        title: Text(
+          AppLocalizations.of(context).translate('appBarTitle'),
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       bottomNavigationBar: bottomBar2(),
       body: SafeArea(
         child: AnimationLimiter(
-          child: GridView.count(
-            childAspectRatio: 1.0,
-            padding: const EdgeInsets.fromLTRB(8.0, 20, 8, 5),
-            crossAxisCount: columnCount,
-            children: gridCards(columnCount),
-          ),
+          child: Builder(builder: (context) {
+            return GridView.count(
+              childAspectRatio: 1.0,
+              padding: const EdgeInsets.fromLTRB(8.0, 20, 8, 5),
+              crossAxisCount: columnCount,
+              children: gridCards(context, columnCount),
+            );
+          }),
         ),
       ),
     );
   }
 
-  gridCards(int columnCount) {
+  gridCards(BuildContext cntxt, int columnCount) {
+    BuildContext context = cntxt;
     return <Widget>[
       AnimatedCard(
-        icon: FontAwesomeIcons.edit,
-        iconColor: Colors.deepPurpleAccent,
+        icon: FontAwesomeIcons.penSquare,
+        iconColor: Colors.pink[900],
         columnCount: columnCount,
         title: "Complain",
-        onPressed: () {},
+        // backgroundColor: ,
+        // textColor: Colors.white,
+        onPressed: () async {
+          Scaffold.of(cntxt)
+              .showSnackBar(SnackBar(content: Text('Complain Registered')));
+          var result = await Navigator.of(context).pushNamed("complain");
+          print(result);
+          if (result == true && result != null) {
+            print(result);
+          }
+        },
         position: 0,
       ),
       AnimatedCard(
-        icon: FontAwesomeIcons.handsHelping,
+        icon: FontAwesomeIcons.solidHandshake,
+        iconColor: Colors.brown[900],
+        // iconColor: Colors.white70,
+        // backgroundColor: Colors.brown[900],
+        // textColor: Colors.white,
         columnCount: columnCount,
         title: "Apna Thana",
         onPressed: () {},
         position: 0,
       ),
       AnimatedCard(
+        icon: FontAwesomeIcons.phoneSquareAlt,
+        iconColor: Colors.indigo[900],
+        columnCount: columnCount,
+        title: "Phone Milaye",
+        onPressed: () {},
+        position: 0,
+      ),
+      AnimatedCard(
         icon: FontAwesomeIcons.exclamationCircle,
-        iconColor: Colors.redAccent,
+        iconColor: Colors.red,
+        // iconColor: Colors.white,
+        // backgroundColor: Colors.red,
+        textColor: Colors.red[900],
         columnCount: columnCount,
         title: "SOS",
         onPressed: () {},
         position: 0,
       ),
       AnimatedCard(
-        icon: FontAwesomeIcons.phoneSquareAlt,
+        icon: FontAwesomeIcons.externalLinkSquareAlt,
+        iconColor: Colors.grey[700],
+        // iconColor: Colors.white,
+        // backgroundColor: Colors.grey[600],
+        // textColor: Colors.white,
         columnCount: columnCount,
-        iconColor: Colors.teal,
-        title: "Phone Milaye",
-        onPressed: () {},
+        title: "External Links",
+        onPressed: () {
+          Navigator.pushNamed(context, "externalLinks");
+        },
         position: 0,
       ),
       AnimatedCard(
         icon: FontAwesomeIcons.servicestack,
         iconColor: Colors.purple,
+        // iconColor: Colors.white70,
+        // backgroundColor: Colors.purple,
+        // textColor: Colors.white,
         columnCount: columnCount,
         title: "Emergency Services",
-        onPressed: () {},
-        position: 0,
-      ),
-      AnimatedCard(
-        icon: FontAwesomeIcons.link,
-        iconColor: Colors.blue[900],
-        columnCount: columnCount,
-        title: "External Links",
         onPressed: () {},
         position: 0,
       ),
